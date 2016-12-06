@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Lyrics = function (props) {
-console.log("Lyrics props: ", props);
+// console.log("Lyrics props: ", props);
 
   const artistChange = e => {
     props.setArtist(e.target.value);
