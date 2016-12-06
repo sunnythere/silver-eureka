@@ -4,11 +4,13 @@ import { hashHistory } from 'react-router';
 
 import initialState from '../initialState';
 import AUDIO from '../audio';
+import store from '../store';
 
 import Albums from '../components/Albums.js';
 import Album from '../components/Album';
 import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
+import {play, pause, load, startSong, toggle, toggleOne, next, prev} from '../action-creators/player';
 
 import { convertAlbum, convertAlbums, convertSong, skip } from '../utils';
 
@@ -16,7 +18,8 @@ export default class AppContainer extends Component {
 
   constructor (props) {
     super(props);
-    this.state = initialState;
+    this.state = Object.assign(
+      initialState, store.getState());
 
     this.toggle = this.toggle.bind(this);
     this.toggleOne = this.toggleOne.bind(this);
@@ -30,7 +33,17 @@ export default class AppContainer extends Component {
     this.addSongToPlaylist = this.addSongToPlaylist.bind(this);
   }
 
+
+
+  componentWillUnmount(){
+    this.unsubscribe();
+  }
+
   componentDidMount () {
+
+    this.unsubscribe = store.subscribe(() => {
+      this.setState(store.getState());
+    });
 
     Promise
       .all([
@@ -66,12 +79,13 @@ export default class AppContainer extends Component {
   }
 
   load (currentSong, currentSongList) {
-    AUDIO.src = currentSong.audioUrl;
-    AUDIO.load();
-    this.setState({
-      currentSong: currentSong,
-      currentSongList: currentSongList
-    });
+    store.dispatch(load(currentSong, currentSongList));
+    // AUDIO.src = currentSong.audioUrl;
+    // AUDIO.load();
+    // this.setState({
+    //   currentSong: currentSong,
+    //   currentSongList: currentSongList
+    // });
   }
 
   startSong (song, list) {
@@ -81,14 +95,16 @@ export default class AppContainer extends Component {
   }
 
   toggleOne (selectedSong, selectedSongList) {
-    if (selectedSong.id !== this.state.currentSong.id)
-      this.startSong(selectedSong, selectedSongList);
-    else this.toggle();
+    store.dispatch(toggleOne(selectedSong, selectedSongList))
+    // if (selectedSong.id !== this.state.currentSong.id)
+    //   this.startSong(selectedSong, selectedSongList);
+    // else this.toggle();
   }
 
   toggle () {
-    if (this.state.isPlaying) this.pause();
-    else this.play();
+    store.dispatch(toggle())
+    // if (this.state.isPlaying) this.pause();
+    // else this.play();
   }
 
   next () {

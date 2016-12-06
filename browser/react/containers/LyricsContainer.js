@@ -60,10 +60,10 @@ class LyricsContainer extends React.Component {
 
 
   render () {
-    // console.log('this the whole state' + this.state)
+     console.log(this.state)
     return (
       <Lyrics
-        text={this.state.text}
+        text={this.state.lyrics.text}
         setArtist={this.setArtist}
         setSong={this.setSong}
         artistQuery={this.state.artistQuery}
