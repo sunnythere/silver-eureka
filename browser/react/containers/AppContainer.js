@@ -69,13 +69,15 @@ export default class AppContainer extends Component {
   }
 
   play () {
-    AUDIO.play();
-    this.setState({ isPlaying: true });
+    store.dispatch(play())
+    // AUDIO.play();
+    // this.setState({ isPlaying: true });
   }
 
   pause () {
-    AUDIO.pause();
-    this.setState({ isPlaying: false });
+    store.dispatch(pause())
+    // AUDIO.pause();
+    // this.setState({ isPlaying: false });
   }
 
   load (currentSong, currentSongList) {
@@ -89,9 +91,7 @@ export default class AppContainer extends Component {
   }
 
   startSong (song, list) {
-    this.pause();
-    this.load(song, list);
-    this.play();
+    store.dispatch(startSong(song, list))
   }
 
   toggleOne (selectedSong, selectedSongList) {
@@ -108,11 +108,13 @@ export default class AppContainer extends Component {
   }
 
   next () {
-    this.startSong(...skip(1, this.state));
+    //this.startSong(...skip(1, this.state.player));
+    store.dispatch(next())
   }
 
   prev () {
-    this.startSong(...skip(-1, this.state));
+    //this.startSong(...skip(-1, this.state.player));
+    store.dispatch(prev())
   }
 
   setProgress (progress) {
@@ -201,7 +203,7 @@ export default class AppContainer extends Component {
 
   render () {
 
-    const props = Object.assign({}, this.state, {
+    const props = Object.assign({}, this.state, this.state.player, {
       toggleOne: this.toggleOne,
       toggle: this.toggle,
       selectAlbum: this.selectAlbum,
@@ -223,10 +225,10 @@ export default class AppContainer extends Component {
         }
         </div>
         <Player
-          currentSong={this.state.currentSong}
-          currentSongList={this.state.currentSongList}
-          isPlaying={this.state.isPlaying}
-          progress={this.state.progress}
+          currentSong={this.state.player.currentSong}
+          currentSongList={this.state.player.currentSongList}
+          isPlaying={this.state.player.isPlaying}
+          progress={this.state.player.progress}
           next={this.next}
           prev={this.prev}
           toggle={this.toggle}
